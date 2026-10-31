@@ -24,7 +24,10 @@ jobs:
         node-version: '18'
 
     - name: Cài đặt thư viện
-      run: npm install
+      run: |
+        npm cache clean --force
+        rm -rf node_modules package-lock.json
+        npm install
 
     - name: Chạy Test Script tự động
       run: npm test
