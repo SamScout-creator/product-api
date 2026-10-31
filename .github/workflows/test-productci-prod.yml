@@ -1,0 +1,23 @@
+name: CI/CD Production Test
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Start services using Docker Compose
+      run: docker compose up -d
+
+    - name: Wait for services to be healthy
+      run: sleep 20
+
+    - name: Check Container Status
+      run: docker ps -a
+
+    - name: Test API Health Endpoint
+      run: curl -f http://localhost:3000/health || exit 1
