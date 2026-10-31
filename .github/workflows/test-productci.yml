@@ -3,12 +3,18 @@ name: CI Pipeline Test
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    
+    # Tạo một database MongoDB ảo trên GitHub để chạy Test
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
     steps:
     - uses: actions/checkout@v3
 
@@ -17,8 +23,10 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install dependencies
+    - name: Cài đặt thư viện
       run: npm install
 
-    - name: Build Docker Image Test
-      run: docker build -t product-api-test .
+    - name: Chạy Test Script tự động
+      run: npm test
+      env:
+        MONGO_URI: mongodb://localhost:27017/testdb
